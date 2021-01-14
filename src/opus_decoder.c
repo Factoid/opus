@@ -202,7 +202,7 @@ static void smooth_fade(const opus_val16 *in1, const opus_val16 *in2,
    }
 }
 
-static int opus_packet_get_mode(const unsigned char *data)
+int opus_packet_get_mode(const unsigned char *data)
 {
    int mode;
    if (data[0]&0x80)
@@ -215,6 +215,56 @@ static int opus_packet_get_mode(const unsigned char *data)
       mode = MODE_SILK_ONLY;
    }
    return mode;
+}
+
+void opus_inspect_frame( OpusDecoder* decoder, const unsigned char* data, int frame_size ) {
+  void* silkDec = (void*)(decoder + decoder->silk_dec_offset);
+
+  int mode;
+  int audiosize;
+
+  if( data != NULL ) {
+    mode = decoder->mode;    
+    audiosize = decoder->frame_size;
+  } else {
+    mode = decoder->prev_mode;
+    audiosize = frame_size;
+  }
+   
+
+  if( mode != MODE_CELT_ONLY ) {
+    if( decoder->prev_mode == MODE_CELT_ONLY ) {
+      silk_InitDecoder( silkDec );
+    }
+    decoder->DecControl.payloadSize_ms = IMAX(10, 1000 * audiosize / decoder->Fs);
+
+    if (data != NULL)
+    {
+      decoder->DecControl.nChannelsInternal = decoder->stream_channels;
+      if( mode == MODE_SILK_ONLY ) {
+         if( bandwidth == OPUS_BANDWIDTH_NARROWBAND ) {
+            decoder->DecControl.internalSampleRate = 8000;
+         } else if( bandwidth == OPUS_BANDWIDTH_MEDIUMBAND ) {
+            decoder->DecControl.internalSampleRate = 12000;
+         } else if( bandwidth == OPUS_BANDWIDTH_WIDEBAND ) {
+            decoder->DecControl.internalSampleRate = 16000;
+         } else {
+            decoder->DecControl.internalSampleRate = 16000;
+            celt_assert( 0 );
+         }
+      } else {
+         /* Hybrid mode */
+         decoder->DecControl.internalSampleRate = 16000;
+      }
+    }
+  }
+
+  int decoded_samples = 0;
+  
+  do {
+    silk_Inspect( silkDec, &decoder->DecControl, &silk_frame_size );
+    decoded_samples += silk_frame_size;
+  } while( decoded_samples < frame_size );
 }
 
 static int opus_decode_frame(OpusDecoder *st, const unsigned char *data,
