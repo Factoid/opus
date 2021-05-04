@@ -986,6 +986,9 @@ OPUS_EXPORT OPUS_WARN_UNUSED_RESULT opus_int32 opus_multistream_packet_unpad(uns
 
 /**@}*/
 
+OPUS_EXPORT OPUS_WARN_UNUSED_RESULT int opus_packet_get_mode(const unsigned char* data);
+
+OPUS_EXPORT void opus_inspect_frame( OpusDecoder* decoder, const unsigned char* data );
 #ifdef __cplusplus
 }
 #endif

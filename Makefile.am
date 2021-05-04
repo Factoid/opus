@@ -16,6 +16,8 @@ include celt_sources.mk
 include silk_sources.mk
 include opus_sources.mk
 
+AM_CFLAGS = "-fPIC"
+
 if FIXED_POINT
 SILK_SOURCES += $(SILK_SOURCES_FIXED)
 if HAVE_SSE4_1
