@@ -33,6 +33,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "errors.h"
 #include "entenc.h"
 #include "entdec.h"
+#include "silk/structs.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -114,6 +115,18 @@ opus_int silk_Decode(                                   /* O    Returns error co
     opus_int16                      *samplesOut,        /* O    Decoded output speech vector                    */
     opus_int32                      *nSamplesOut,       /* O    Number of samples decoded                       */
     int                             arch                /* I    Run-time architecture                           */
+);
+
+opus_int silk_Inspect(                                   /* O    Returns error code                              */
+    void*                           decState,           /* I/O  State                                           */
+    silk_DecControlStruct*          decControl,         /* I/O  Control Structure                               */
+    opus_int                        lostFlag,           /* I    0: no loss, 1 loss, 2 decode fec                */
+    opus_int                        newPacketFlag,      /* I    Indicates first decoder call for this packet    */
+    ec_dec                          *psRangeDec,        /* I/O  Compressor data structure                       */
+    opus_int16                      *samplesOut,        /* O    Decoded output speech vector                    */
+    opus_int32                      *nSamplesOut,       /* O    Number of samples decoded                       */
+    int                             arch,                /* I    Run-time architecture                           */
+    silk_decoder_control	    *slkDecCtrl
 );
 
 #if 0

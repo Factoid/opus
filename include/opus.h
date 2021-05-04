@@ -35,6 +35,7 @@
 
 #include "opus_types.h"
 #include "opus_defines.h"
+#include "silk/structs.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -467,6 +468,17 @@ OPUS_EXPORT OPUS_WARN_UNUSED_RESULT int opus_decode(
     int frame_size,
     int decode_fec
 ) OPUS_ARG_NONNULL(1) OPUS_ARG_NONNULL(4);
+
+OPUS_EXPORT OPUS_WARN_UNUSED_RESULT int opus_inspect(
+    OpusDecoder *st,
+    const unsigned char *data,
+    opus_int32 len,
+    opus_int16 *pcm,
+    int frame_size,
+    int decode_fec,
+    silk_decoder_control* slkDecCtrl
+) OPUS_ARG_NONNULL(1) OPUS_ARG_NONNULL(4) OPUS_ARG_NONNULL(7);
+
 
 /** Decode an Opus packet with floating point output.
   * @param [in] st <tt>OpusDecoder*</tt>: Decoder state
