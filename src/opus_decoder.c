@@ -217,8 +217,7 @@ static int opus_packet_get_mode(const unsigned char *data)
    return mode;
 }
 
-static int opus_inspect_frame(OpusDecoder *st, const unsigned char *data,
-      opus_int32 len, opus_val16 *pcm, int frame_size, int decode_fec, silk_decoder_control* slkDecCtrl )
+static int opus_inspect_frame(OpusDecoder *st, const unsigned char *data, opus_int32 len, opus_val16 *pcm, int frame_size, int decode_fec, silk_decoder_control* slkDecCtrl )
 {
    void *silk_dec;
    CELTDecoder *celt_dec;
